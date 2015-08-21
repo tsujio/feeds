@@ -1,0 +1,11 @@
+mongo:
+  host: 127.0.0.1:27017
+  database: feeds
+
+minimum_update_period: 900    # 15 min
+
+lang:
+  find_feed_language: en
+
+log:
+  mongo: 1

@@ -1,0 +1,38 @@
+%script{src: '/js/channel/new.js'}
+
+%h1 New Channel
+
+%form.pure-form#form-new-channel{action: '/channel/new', method: 'GET'}
+  %p
+    %input{type: 'url', name: 'feed_url', placeholder: 'Feed URL', value: "#{@url}"}
+    %input.pure-button{type: 'submit', value: 'Get Contents'}
+
+- unless @feed.nil?
+  %section.channel
+    %h1= @feed[:title]
+    %p.description= @feed[:description]
+    %ul.menu
+      %li
+        %a.pure-button{href: "#{@feed[:link]}"} Visit
+      %li
+        %form.pure-form#form-add-channel{action: '/channel', method: 'POST'}
+          %input{type: 'hidden', name: "feed_url", value: "#{@url}"}
+          %input.pure-button.pure-button-primary{type: 'submit', value: 'Add'}
+
+  - @feed[:items].each do |item|
+    %article.article.listed
+      .article-header
+        %h1= item[:title]
+        %p.channel-title= @feed[:title]
+        %p.date= item[:date].localtime.strftime('%Y-%m-%d %H:%M:%S')
+        .clear-float
+
+      .article-body
+        - if item[:content_encoded]
+          != san item[:content_encoded]
+        - else
+          != san item[:description]
+
+      %ul.menu
+        %li
+          %a.pure-button{href: "#{item[:link]}"} Visit

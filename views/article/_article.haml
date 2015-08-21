@@ -1,0 +1,23 @@
+%article.article.listed
+  .article-header
+    %h1= article[:title]
+    %p.channel-title= article[:channel][:title]
+    %p.date= article[:date].localtime.strftime('%Y-%m-%d %H:%M:%S')
+    %p.article-id{hidden: 1}= article[:serial]
+    .clear-float
+
+  .article-body
+    - if article[:content_encoded]
+      != san article[:content_encoded]
+    - else
+      != san article[:description]
+
+  %ul.menu
+    %li
+      %a.pure-button{href: "#{article[:link]}"} Visit
+    %li
+      %button.btn-save.pure-button Save
+    %li
+      %button.btn-keep-unread.pure-button Keep Unread
+
+  .bottom-of-article

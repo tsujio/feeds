@@ -1,0 +1,14 @@
+%section.channel.listed
+  %h1= channel[:title]
+
+  %p.channel-id{hidden: 1}= channel[:serial]
+  %p.added-at Added at #{channel[:_id].generation_time.localtime.strftime('%Y-%m-%d %H:%M:%S')}
+  %p.description= channel[:description]
+
+  %ul.menu
+    %li
+      %a.pure-button{href: "#{channel[:link]}"} Visit
+    %li
+      %a.pure-button{href: "/channel/#{channel[:serial]}/article"} Articles
+    %li
+      %button.pure-button.btn-delete <i class="fa fa-trash"></i> Remove

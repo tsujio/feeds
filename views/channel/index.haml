@@ -1,0 +1,9 @@
+%script{src: '/js/channel/index.js'}
+
+%h1 Channels
+
+#channel-index-menu
+  %a.pure-button{href: '/channel/new'} <i class="fa fa-plus"></i> Add
+
+- @channels.each do |c|
+  != haml :'channel/_channel', locals: {channel: c}

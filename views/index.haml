@@ -1,0 +1,7 @@
+%script{src: '/js/jquery.inview.min.js'}
+%script{src: '/js/article/index.js'}
+
+%h1 Articles
+
+- @articles.each do |a|
+  != haml :'article/_article', locals: {article: a}

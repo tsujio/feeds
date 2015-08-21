@@ -1,0 +1,156 @@
+/* header */
+
+#header {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    background: #3D4F5D;
+}
+
+#header > header {
+    padding: 1em;
+}
+
+#header > header h1 a {
+    color: silver;
+    text-decoration: none;
+}
+
+#navigator {
+    margin-bottom: 1em;
+}
+
+#navigator a {
+    color: white;
+}
+
+#navigator a:hover {
+    color: black;
+}
+
+#about {
+    font-size: 70%;
+}
+
+/* end of header */
+
+/* content part */
+
+#content-part {
+    margin-left: 20%;
+}
+
+#content-part > section {
+    padding: 2em 3em 0px;
+}
+
+/* end of content part */
+
+/* channel */
+
+.channel {
+    margin-bottom: 1em;
+}
+
+.channel.listed {
+    border: 1px solid silver;
+    padding: 1em 2em 0em;
+}
+
+.channel > h1 {
+    font-size: 150%;
+}
+
+.channel > .added-at {
+    margin-top: 0.5em;
+    text-align: right;
+}
+
+.channel > .description {
+    padding: 0em 2em 1em;
+}
+
+.channel .menu {
+    list-style-type: none;
+    margin-left: 0px;
+    padding-left: 0px;
+}
+
+.channel .menu li {
+    margin: 0em 0.5em;
+    display: inline;
+}
+
+/* end of channel */
+
+/* article */
+
+.article {
+    padding: 1em 2em 0em;
+    margin-bottom: 1em;
+}
+
+.article.listed {
+    border: 1px solid silver;
+}
+
+.article > .article-header h1 {
+    font-size: 150%;
+}
+
+.article > .article-header .channel-title {
+    float: left;
+    margin-top: 0.5em;
+    padding-left: 1em;
+}
+
+.article > .article-header .date {
+    float: right;
+    margin-top: 0.5em;
+    padding-right: 1em;
+}
+
+.article > .article-header .clear-float {
+    clear: both;
+}
+
+.article > .article-body {
+    padding: 0em 2em 1em;
+}
+
+.article .menu {
+    list-style-type: none;
+    margin-left: 0px;
+    padding-left: 0px;
+}
+
+.article .menu li {
+    margin: 0em 0.5em;
+    display: inline;
+}
+
+/* end of article */
+
+/* channel/index */
+
+#channel-index-menu {
+    padding: 1em 0em;
+}
+
+/* end of channel/index */
+
+/* channel/new */
+
+#form-new-channel {
+    padding-bottom: 0.5em;
+}
+
+#form-new-channel input[type=url] {
+    width: 20em;
+}
+
+#form-add-channel {
+    display: inline;
+}
+
+/* end of channel/new */

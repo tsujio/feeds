@@ -27,5 +27,9 @@
       %label{for: 'amount-of-articles-at-once'} Amount of Articles to View at Once
       %input#amount-of-articles-at-once{type: 'text', name: 'amount_of_articles_at_once', value: "#{@config[:amount_of_articles_at_once]}"}
 
+    .pure-control-group
+      %label{for: 'amount-of-channels-to-update-at-once'} Amount of Channels to Update at Once
+      %input#amount-of-channels-to-update-at-once{type: 'text', name: 'amount_of_channels_to_update_at_once', value: "#{@config[:amount_of_channels_to_update_at_once]}"}
+
     .pure-controls
       %input.pure-button.pure-button-primary{type: 'submit', value: 'Submit'}

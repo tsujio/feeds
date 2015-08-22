@@ -28,6 +28,7 @@ db[:config].insert_one(
   find_feed_language: 'en',
   articles_order: 1,
   amount_of_articles_at_once: 20,
+  amount_of_channels_to_update_at_once: 5,
 )
 
 # Create indexes

@@ -23,7 +23,9 @@ _config = db[:config]
 get '/' do
   config = _config.find.first
 
-  _channels.find.each do |c|
+  _channels.find
+    .sort(last_checked: 1)
+    .limit(config[:amount_of_channels_to_update_at_once]).each do |c|
     update_articles(c, _channels, _articles, _sequences,
       false, config[:minimum_update_period], config[:find_feed_language])
   end
@@ -153,6 +155,7 @@ post '/setting' do
     ['minimum_update_period', :Integer],
     ['find_feed_language', :String],
     ['amount_of_articles_at_once', :Integer],
+    ['amount_of_channels_to_update_at_once', :Integer],
   ])
   if params.has_key? 'articles_order'
     attrs['articles_order'] = params['articles_order'] == 'desc' ? -1 : 1

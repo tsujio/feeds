@@ -1,0 +1,12 @@
+%h1 Settings
+
+%form#settings-form.pure-form.pure-form-aligned{action: '/setting', method: 'POST'}
+  %fieldset
+    .pure-control-group
+      %label{for: 'minimum-update-period'} Mimimum Update Period
+      %input#minimum-update-period{type: 'text', name: 'minimum_update_period', value: "#{@config[:minimum_update_period]}"}
+    .pure-control-group
+      %label{for: 'find-feed-language'} Find Feed Language
+      %input#find-feed-language{type: 'text', name: 'find_feed_language', value: "#{@config[:find_feed_language]}"}
+    .pure-controls
+      %input.pure-button.pure-button-primary{type: 'submit', value: 'Submit'}

@@ -17,11 +17,15 @@ db = Mongo::Client.new([settings.mongo[:host]], database: settings.mongo[:databa
 _channels = db[:channels]
 _articles = db[:articles]
 _sequences = db[:sequences]
+_config = db[:config]
+
+config = _config.find.first
 
 # Top
 get '/' do
   _channels.find.each do |c|
-    update_articles(c, _channels, _articles, _sequences)
+    update_articles(c, _channels, _articles, _sequences,
+      false, config[:minimum_update_period], config[:find_feed_language])
   end
 
   @title = ''
@@ -45,7 +49,7 @@ end
 get '/channel/new' do
   @url = params[:feed_url].to_s
   unless @url.empty?
-    @feed = retrieve_feed(@url)
+    @feed = retrieve_feed(@url, config[:find_feed_language])
   else
     @feed = nil
   end
@@ -58,7 +62,7 @@ end
 # Add channel
 post '/channel' do
   url = params[:feed_url].to_s
-  feed = retrieve_feed(url)
+  feed = retrieve_feed(url, config[:find_feed_language])
   if _channels.find(link: feed[:link]).count == 0
     _channels.insert_one(
       serial: get_serial(_sequences, 'channel'),
@@ -100,8 +104,29 @@ end
 post '/update_articles' do
   force = to_b(params[:force])
   _channels.find.each do |c|
-    update_articles(c, _channels, _articles, _sequences, force)
+    update_articles(c, _channels, _articles, _sequences,
+      force, config[:minimum_update_period], config[:find_feed_language])
   end
 
   200
+end
+
+# Settings
+get '/setting' do
+  @config = _config.find.first
+  @title = 'Settings'
+  haml :setting, layout: :layout
+end
+
+# Update settings
+post '/setting' do
+  minimum_update_period = params[:minimum_update_period].to_i
+  find_feed_language = params[:find_feed_language].to_s
+
+  _config.find.update_one({
+    minimum_update_period: minimum_update_period,
+    find_feed_language: find_feed_language,
+  }, upsert: true)
+
+  redirect to '/setting'
 end

@@ -20,10 +20,10 @@ module Helpers
   end
 
   # Find feed urls for the target url
-  def find_feed_urls(url)
+  def find_feed_urls(url, find_feed_language = nil)
     # Fetch content
     content_type, charset, data = open(
-      url, "Accept-Language" => settings.lang[:find_feed_language]
+      url, "Accept-Language" => find_feed_language
     ) {|f| [f.content_type, f.charset, f.read] }
 
     # Parse content
@@ -38,7 +38,7 @@ module Helpers
       meta_refresh = doc.at('meta[http-equiv="refresh"]')
       if meta_refresh
         redirect_url = meta_refresh['content'][/URL=(.+)/, 1].gsub(/['"]/, '')
-        return find_feed_urls redirect_url
+        return find_feed_urls(redirect_url, find_feed_language)
       end
 
       # Find feed urls
@@ -50,9 +50,9 @@ module Helpers
   end
 
   # Retrieve feed
-  def retrieve_feed(url)
+  def retrieve_feed(url, find_feed_language = nil)
     rss = nil
-    find_feed_urls(url).each do |feed_url|
+    find_feed_urls(url, find_feed_language).each do |feed_url|
       begin
         rss = RSS::Parser.parse(feed_url)
       rescue RSS::InvalidRSSError
@@ -77,11 +77,12 @@ module Helpers
   end
 
   # Fetch and store articles
-  def update_articles(channel, _channels, _articles, _sequences, force = false)
+  def update_articles(channel, _channels, _articles, _sequences,
+    force = false, minimum_update_period = 900, find_feed_language = nil)
     return if !force &&
-      Time.now - channel[:last_checked] < settings.minimum_update_period
+      Time.now - channel[:last_checked] < minimum_update_period
 
-    feed = retrieve_feed channel[:link]
+    feed = retrieve_feed(channel[:link], find_feed_language)
     feed[:items].each do |item|
       next if _articles.find(
         link: item[:link],

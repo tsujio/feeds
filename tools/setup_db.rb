@@ -22,7 +22,12 @@ db = Mongo::Client.new([option[:server]], database: option[:database])
 
 # Set db version
 raise RuntimeError.new("Database is already setup") if db[:config].find.count > 0
-db[:config].insert_one(name: 'version', value: 1)
+db[:config].insert_one(
+  version: 1,
+  minimum_update_period: 900,
+  find_feed_language: 'en',
+  articles_order: 1,
+)
 
 # Create indexes
 db[:channels].indexes.create_many([

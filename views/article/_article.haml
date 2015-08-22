@@ -16,7 +16,7 @@
     %li
       %a.pure-button{href: "#{article[:link]}"} Visit
     %li
-      %button.btn-save.pure-button Save
+      %button.btn-save.pure-button{class: "#{article[:saved] ? 'saved' : 'nonsaved'}"}= article[:saved] ? 'Unsave' : 'Save'
     %li
       %button.btn-keep-unread.pure-button Keep Unread
 

@@ -24,14 +24,20 @@ $(function() {
       }
     });
 
-    // Save article
+    // Save/Unsave article
     article.find('.btn-save').click(function() {
+      var button = $(this);
+      var now_saved = button.hasClass('saved');
+
       $.ajax({
         type: 'PATCH',
         url: '/article/' + article_id,
-        data: {saved: true},
+        data: {saved: now_saved ? false : true},
         success: function() {
-          console.log('save: ' + article_id);
+          button.removeClass(now_saved ? 'saved' : 'nonsaved');
+          button.addClass(now_saved ? 'nonsaved' : 'saved');
+          button.text(now_saved ? 'Save' : 'Unsave')
+          console.log((now_saved ? 'unsave: ' : 'save: ') + article_id);
         },
         error: function(xhr, status, error) {
           console.log(error);

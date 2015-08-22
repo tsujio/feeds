@@ -122,7 +122,7 @@ module Helpers
   # Sanitize string
   def san(s)
     Sanitize.clean(s, elements: [
-        'p', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'a', 'img', 'blockquote'
+        'p', 'br', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'a', 'img', 'blockquote'
       ],
       attributes: {
         'a' => ['href'],

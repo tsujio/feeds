@@ -29,7 +29,9 @@ get '/' do
   end
 
   @title = ''
-  @articles = _articles.find(read: false).sort(date: config[:articles_order])
+  @articles = _articles.find(read: false)
+    .sort(date: config[:articles_order])
+    .limit(config[:amount_of_articles_at_once])
 
   if params['format'] == 'json'
     json @articles
@@ -90,11 +92,28 @@ get '/article' do
   query['read'] = to_b(params['read']) if params.has_key? 'read'
   query['saved'] = to_b(params['saved']) if params.has_key? 'saved'
 
+  if params.has_key? 'last_article_id'
+    last_article_id = params[:last_article_id].to_i
+    last_article_date = _articles.find(serial: last_article_id).first[:date]
+    gte_or_lte = config[:articles_order] == 1 ? '$gte' : '$lte'
+    query.merge!({
+      date: {gte_or_lte => last_article_date},
+      serial: {'$ne' => last_article_id},
+    })
+  end
+
   @title = 'Articles'
   @articles = _articles.find(query)
     .sort(date: config[:articles_order])
+    .limit(config[:amount_of_articles_at_once])
 
-  haml :'article/index', layout: :layout
+  if request.xhr?
+    @articles.map {|a|
+      haml(:'article/_article', locals: {article: a}, layout: false)
+    }.join()
+  else
+    haml :'article/index', layout: :layout
+  end
 end
 
 # Update all article
@@ -138,6 +157,7 @@ post '/setting' do
   attrs = extract_params(params, [
     ['minimum_update_period', :Integer],
     ['find_feed_language', :String],
+    ['amount_of_articles_at_once', :Integer],
   ])
   if params.has_key? 'articles_order'
     attrs['articles_order'] = params['articles_order'] == 'desc' ? -1 : 1

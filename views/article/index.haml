@@ -6,5 +6,8 @@
 %p#mark-all-as-read
   %button#btn-mark-all-as-read.pure-button Mark All as Read
 
-- @articles.each do |a|
-  != haml :'article/_article', locals: {article: a}
+#articles-area
+  - @articles.each do |a|
+    != haml :'article/_article', locals: {article: a}
+
+%button.pure-button#btn-read-more Read More...

@@ -27,6 +27,7 @@ db[:config].insert_one(
   minimum_update_period: 900,
   find_feed_language: 'en',
   articles_order: 1,
+  amount_of_articles_at_once: 20,
 )
 
 # Create indexes

@@ -82,6 +82,7 @@ get '/article' do
   query = {}
   query['read'] = to_b(params['read']) if params.has_key? 'read'
   query['saved'] = to_b(params['saved']) if params.has_key? 'saved'
+  query['channel.serial'] = params['channel_id'].to_i if params.has_key? 'channel_id'
 
   if params.has_key? 'last_article_id'
     last_article_id = params[:last_article_id].to_i

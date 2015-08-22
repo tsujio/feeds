@@ -76,6 +76,20 @@ module Helpers
     }
   end
 
+  # Add channel
+  def add_channel(url, _channels, _sequences, find_feed_language = nil)
+    feed = retrieve_feed(url, find_feed_language)
+    if _channels.find(link: feed[:link]).count == 0
+      _channels.insert_one(
+        serial: get_serial(_sequences, 'channel'),
+        title: feed[:title],
+        description: feed[:description],
+        link: feed[:link],
+        last_checked: Time.at(0).utc,
+      )
+    end
+  end
+
   # Fetch and store articles
   def update_articles(channel, _channels, _articles, _sequences,
     force = false, minimum_update_period = 900, find_feed_language = nil)

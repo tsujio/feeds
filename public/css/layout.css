@@ -153,6 +153,15 @@
     display: inline;
 }
 
+#form-multiple-add {
+    border-top: 1px solid silver;
+    margin-top: 2em;
+}
+
+#form-multiple-add button[type=submit] {
+    font-size: small;
+}
+
 /* end of channel/new */
 
 /* article/index */

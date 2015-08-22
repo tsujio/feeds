@@ -36,3 +36,9 @@
       %ul.menu
         %li
           %a.pure-button{href: "#{item[:link]}"} Visit
+
+%form#form-multiple-add.pure-form.pure-form-stacked{action: '/channel', method: 'POST'}
+  %fieldset
+    %label{for: 'feed-urls'} You can add multiple channels at once by listing urls in the below text area (one url per line, and now your subscribing channels are listed).
+    %textarea#feed-urls{name: 'feed_urls'}= @existing_channels.join("\n")
+    %button.pure-button.pure-button-primary{type: 'submit'} Add Abobe Channels

@@ -58,6 +58,10 @@ get '/channel/new' do
 
   @title = 'New Channel'
 
+  @existing_channels = _channels.find
+    .sort(_id: 1)
+    .map {|a| a[:link] }
+
   haml :'channel/new', layout: :layout
 end
 
@@ -65,16 +69,14 @@ end
 post '/channel' do
   config = _config.find.first
 
-  url = params[:feed_url].to_s
-  feed = retrieve_feed(url, config[:find_feed_language])
-  if _channels.find(link: feed[:link]).count == 0
-    _channels.insert_one(
-      serial: get_serial(_sequences, 'channel'),
-      title: feed[:title],
-      description: feed[:description],
-      link: feed[:link],
-      last_checked: Time.at(0).utc,
-    )
+  if params.has_key? 'feed_url'
+    urls = [params[:feed_url].to_s]
+  else
+    urls = params[:feed_urls].to_s.split("\n").map {|u| u.strip }
+  end
+
+  urls.each do |url|
+    add_channel(url, _channels, _sequences, config[:find_feed_language])
   end
 
   redirect to '/'

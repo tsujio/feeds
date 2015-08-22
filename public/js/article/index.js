@@ -41,6 +41,19 @@ $(function() {
 
     // Keep article unread
     article.find('.btn-keep-unread').click(function() {
+      article.find('.bottom-of-article').unbind('inview');
+
+      $.ajax({
+        type: 'PATCH',
+        url: '/article/' + article_id,
+        data: {read: false},
+        success: function() {
+          console.log('unread: ' + article_id);
+        },
+        error: function(xhr, status, error) {
+          console.log(error);
+        }
+      });
     });
   };
 

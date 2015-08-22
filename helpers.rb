@@ -60,6 +60,11 @@ module Helpers
     end
     raise RuntimeError.new("Failed to retrieve feed (url = #{url})") if rss.nil?
 
+    # Convert to rss object if got atom
+    if rss.class == RSS::Atom::Feed
+      rss = rss.to_rss('2.0')
+    end
+
     {
       title: rss.channel.title,
       description: rss.channel.description,

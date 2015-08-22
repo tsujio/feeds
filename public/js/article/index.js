@@ -5,12 +5,16 @@ $(function() {
 
     // Auto marking as read by scrolling
     article.find('.bottom-of-article').bind('inview', function(e, isInView) {
+      var bottom = $(this);
+
       if (isInView) {
         $.ajax({
           type: 'PATCH',
           url: '/article/' + article_id,
           data: {read: true},
           success: function() {
+            bottom.unbind('inview');
+
             console.log('read: ' + article_id);
           },
           error: function(xhr, status, error) {

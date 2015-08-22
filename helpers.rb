@@ -120,6 +120,27 @@ module Helpers
     return false
   end
 
+  # Extract only permitted params
+  def extract_params(params, keys)
+    _params = {}
+    keys.each do |key, type|
+      next unless params.has_key? key
+
+      case type
+      when :Boolean
+        _params[key] = to_b(params[key])
+      when :String
+        _params[key] = params[key].to_s
+      when :Integer
+        _params[key] = params[key].to_i
+      else
+        _params[key] = params[key].to_s
+      end
+    end
+
+    _params
+  end
+
   # Sanitize string
   def san(s)
     Sanitize.clean(s, elements: [
@@ -137,7 +158,7 @@ module Helpers
       })
   end
 
-  module_function :find_feed_urls, :retrieve_feed, :to_b, :san
+  module_function :find_feed_urls, :retrieve_feed, :to_b, :san, :extract_params
 end
 
 helpers do

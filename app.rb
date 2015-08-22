@@ -89,12 +89,17 @@ get '/article' do
   haml :'article/index', layout: :layout
 end
 
+# Update all article
+patch '/article' do
+  attrs = extract_params(params, [['read', :Boolean], ['saved', :Boolean]])
+  _articles.find.update_many('$set' => attrs)
+
+  200
+end
+
 # Update article
 patch '/article/:id' do
-  attrs = {}
-  attrs['read'] = to_b(params['read']) if params.has_key? 'read'
-  attrs['saved'] = to_b(params['saved']) if params.has_key? 'saved'
-
+  attrs = extract_params(params, [['read', :Boolean], ['saved', :Boolean]])
   _articles.find(serial: params[:id].to_i).update_one('$set' => attrs)
 
   200

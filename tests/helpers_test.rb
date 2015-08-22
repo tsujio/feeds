@@ -30,4 +30,21 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal(expected, Helpers.san(actual))
     end
   end
+
+  sub_test_case '#extract_params' do
+    data(
+      'boolean' => [{foo: true}, {foo: :Boolean}],
+      'string' => [{bar: 'bar'}, {bar: :String}],
+      'integer' => [{baz: 1}, {baz: :Integer}],
+    )
+    def test_extract_params(data)
+      expected, actual = data
+      params = {
+        foo: 'true',
+        bar: 'bar',
+        baz: '1',
+      }
+      assert_equal(expected, Helpers.extract_params(params, actual))
+    end
+  end
 end

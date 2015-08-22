@@ -39,4 +39,19 @@ $(function() {
     article.find('.btn-keep-unread').click(function() {
     });
   });
+
+  // Mark all as read
+  $('#btn-mark-all-as-read').click(function() {
+    $.ajax({
+      type: 'PATCH',
+      url: '/article',
+      data: {read: true},
+      success: function() {
+        console.log('marked all as read');
+      },
+      error: function(xhr, status, error) {
+        console.log(error);
+      }
+    });
+  });
 });

@@ -154,3 +154,11 @@
 }
 
 /* end of channel/new */
+
+/* article/index */
+
+#mark-all-as-read {
+    text-align: right;
+}
+
+/* end of article/index */

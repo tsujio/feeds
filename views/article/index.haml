@@ -3,5 +3,8 @@
 
 %h1 Articles
 
+%p#mark-all-as-read
+  %button#btn-mark-all-as-read.pure-button Mark All as Read
+
 - @articles.each do |a|
   != haml :'article/_article', locals: {article: a}

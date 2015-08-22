@@ -19,17 +19,17 @@ _articles = db[:articles]
 _sequences = db[:sequences]
 _config = db[:config]
 
-config = _config.find.first
-
 # Top
 get '/' do
+  config = _config.find.first
+
   _channels.find.each do |c|
     update_articles(c, _channels, _articles, _sequences,
       false, config[:minimum_update_period], config[:find_feed_language])
   end
 
   @title = ''
-  @articles = _articles.find(read: false).sort(date: -1)
+  @articles = _articles.find(read: false).sort(date: config[:articles_order])
 
   if params['format'] == 'json'
     json @articles
@@ -47,6 +47,8 @@ end
 
 # New channel
 get '/channel/new' do
+  config = _config.find.first
+
   @url = params[:feed_url].to_s
   unless @url.empty?
     @feed = retrieve_feed(@url, config[:find_feed_language])
@@ -61,6 +63,8 @@ end
 
 # Add channel
 post '/channel' do
+  config = _config.find.first
+
   url = params[:feed_url].to_s
   feed = retrieve_feed(url, config[:find_feed_language])
   if _channels.find(link: feed[:link]).count == 0
@@ -78,13 +82,15 @@ end
 
 # List articles
 get '/article' do
+  config = _config.find.first
+
   query = {}
   query['read'] = to_b(params['read']) if params.has_key? 'read'
   query['saved'] = to_b(params['saved']) if params.has_key? 'saved'
 
   @title = 'Articles'
   @articles = _articles.find(query)
-    .sort(date: -1)
+    .sort(date: config[:articles_order])
 
   haml :'article/index', layout: :layout
 end
@@ -107,6 +113,8 @@ end
 
 # Update articles
 post '/update_articles' do
+  config = _config.find.first
+
   force = to_b(params[:force])
   _channels.find.each do |c|
     update_articles(c, _channels, _articles, _sequences,
@@ -125,13 +133,15 @@ end
 
 # Update settings
 post '/setting' do
-  minimum_update_period = params[:minimum_update_period].to_i
-  find_feed_language = params[:find_feed_language].to_s
+  attrs = extract_params(params, [
+    ['minimum_update_period', :Integer],
+    ['find_feed_language', :String],
+  ])
+  if params.has_key? 'articles_order'
+    attrs['articles_order'] = params['articles_order'] == 'desc' ? -1 : 1
+  end
 
-  _config.find.update_one({
-    minimum_update_period: minimum_update_period,
-    find_feed_language: find_feed_language,
-  }, upsert: true)
+  _config.find.update_one(attrs, upsert: true)
 
   redirect to '/setting'
 end

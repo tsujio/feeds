@@ -5,8 +5,23 @@
     .pure-control-group
       %label{for: 'minimum-update-period'} Mimimum Update Period
       %input#minimum-update-period{type: 'text', name: 'minimum_update_period', value: "#{@config[:minimum_update_period]}"}
+
     .pure-control-group
       %label{for: 'find-feed-language'} Find Feed Language
       %input#find-feed-language{type: 'text', name: 'find_feed_language', value: "#{@config[:find_feed_language]}"}
+
+    .pure-control-group
+      %label Articles Order
+      - if @config[:articles_order] == -1
+        %label.pure-radio{for: 'articles-order-asc'}
+          %input#articles-order-asc{type: 'radio', name: 'articles_order', value: 'asc'} Date ASC
+        %label.pure-radio{for: 'articles-order-desc'}
+          %input#articles-order-desc{type: 'radio', name: 'articles_order', value: 'desc', checked: 'checked'} Date DESC
+      - else
+        %label.pure-radio{for: 'articles-order-asc'}
+          %input#articles-order-asc{type: 'radio', name: 'articles_order', value: 'asc', checked: 'checked'} Date ASC
+        %label.pure-radio{for: 'articles-order-desc'}
+          %input#articles-order-desc{type: 'radio', name: 'articles_order', value: 'desc'} Date DESC
+
     .pure-controls
       %input.pure-button.pure-button-primary{type: 'submit', value: 'Submit'}

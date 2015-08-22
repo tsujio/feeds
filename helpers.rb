@@ -50,15 +50,20 @@ module Helpers
   end
 
   # Retrieve feed
-  def retrieve_feed(url, find_feed_language = nil)
+  def retrieve_feed(url, find_feed_language = nil, validate = true)
     rss = nil
     find_feed_urls(url, find_feed_language).each do |feed_url|
       begin
-        rss = RSS::Parser.parse(feed_url)
+        rss = RSS::Parser.parse(feed_url, validate)
       rescue RSS::InvalidRSSError
       end
     end
-    raise RuntimeError.new("Failed to retrieve feed (url = #{url})") if rss.nil?
+
+    # If parsing failed
+    if rss.nil?
+      raise RuntimeError.new("Failed to retrieve feed (url = #{url})") unless validate
+      return retrieve_feed(url, find_feed_language, false)
+    end
 
     # Convert to rss object if got atom
     if rss.class == RSS::Atom::Feed

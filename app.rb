@@ -28,16 +28,7 @@ get '/' do
       false, config[:minimum_update_period], config[:find_feed_language])
   end
 
-  @title = ''
-  @articles = _articles.find(read: false)
-    .sort(date: config[:articles_order])
-    .limit(config[:amount_of_articles_at_once])
-
-  if params['format'] == 'json'
-    json @articles
-  else
-    haml :index, layout: :layout
-  end
+  redirect to '/article?read=false'
 end
 
 # List channels
@@ -94,12 +85,15 @@ get '/article' do
 
   if params.has_key? 'last_article_id'
     last_article_id = params[:last_article_id].to_i
-    last_article_date = _articles.find(serial: last_article_id).first[:date]
-    gte_or_lte = config[:articles_order] == 1 ? '$gte' : '$lte'
-    query.merge!({
-      date: {gte_or_lte => last_article_date},
-      serial: {'$ne' => last_article_id},
-    })
+    last_article = _articles.find(serial: last_article_id).first
+    if last_article
+      last_article_date = last_article[:date]
+      gte_or_lte = config[:articles_order] == 1 ? '$gte' : '$lte'
+      query.merge!({
+        date: {gte_or_lte => last_article_date},
+        serial: {'$ne' => last_article_id},
+      })
+    end
   end
 
   @title = 'Articles'

@@ -67,10 +67,13 @@ post '/channel' do
   if params.has_key? 'feed_url'
     urls = [params[:feed_url].to_s]
   else
-    urls = params[:feed_urls].to_s.split("\n").map {|u| u.strip }
+    urls = params[:feed_urls].to_s
+      .split("\n")
+      .map {|u| u.strip }
   end
 
   urls.each do |url|
+    next if url.empty?
     add_channel(url, _channels, _sequences, config[:find_feed_language])
   end
 

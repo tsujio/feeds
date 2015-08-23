@@ -30,7 +30,7 @@ get '/' do
       false, config[:minimum_update_period])
   end
 
-  redirect to '/article?read=false'
+  redirect to '/article?read=false&order=asc'
 end
 
 # List channels
@@ -101,12 +101,18 @@ get '/article' do
   query['saved'] = to_b(params['saved']) if params.has_key? 'saved'
   query['channel.serial'] = params['channel_id'].to_i if params.has_key? 'channel_id'
 
+  if params['order']
+    order = params['order'] == 'asc' ? 1 : -1
+  else
+    order = config[:articles_order]
+  end
+
   if params.has_key? 'last_article_id'
     last_article_id = params[:last_article_id].to_i
     last_article = _articles.find(serial: last_article_id).first
     if last_article
       last_article_date = last_article[:date]
-      gte_or_lte = config[:articles_order] == 1 ? '$gte' : '$lte'
+      gte_or_lte = order == 1 ? '$gte' : '$lte'
       query.merge!({
         date: {gte_or_lte => last_article_date},
         serial: {'$ne' => last_article_id},
@@ -116,7 +122,7 @@ get '/article' do
 
   @title = 'Articles'
   @articles = _articles.find(query)
-    .sort(date: config[:articles_order])
+    .sort(date: order)
     .limit(config[:amount_of_articles_at_once])
 
   if request.xhr?

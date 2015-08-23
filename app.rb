@@ -80,6 +80,13 @@ post '/channel' do
   redirect to '/'
 end
 
+# Delete channel
+delete '/channel/:id' do
+  _channels.find(serial: params[:id].to_i).delete_one
+
+  200
+end
+
 # List articles
 get '/article' do
   config = _config.find.first

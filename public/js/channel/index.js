@@ -1,6 +1,6 @@
 $(function() {
   $('.channel').each(function() {
-    var chennel_id = $(this).find('.channel-id').text();
+    var channel_id = $(this).find('.channel-id').text();
 
     $(this).find('.btn-delete').click(function() {
       $.ajax({

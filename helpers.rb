@@ -28,7 +28,7 @@ module Helpers
 
     # Parse content
     case content_type
-    when 'application/xml'
+    when 'application/xml', 'application/rss+xml', 'text/xml'
       [url]
     when 'text/html'
       # Parse html
@@ -50,19 +50,13 @@ module Helpers
   end
 
   # Retrieve feed
-  def retrieve_feed(url, find_feed_language = nil, validate = true)
+  def retrieve_feed(feed_url, validate = true)
     rss = nil
-    find_feed_urls(url, find_feed_language).each do |feed_url|
-      begin
-        rss = RSS::Parser.parse(feed_url, validate)
-      rescue RSS::InvalidRSSError
-      end
-    end
-
-    # If parsing failed
-    if rss.nil?
-      raise RuntimeError.new("Failed to retrieve feed (url = #{url})") unless validate
-      return retrieve_feed(url, find_feed_language, false)
+    begin
+      rss = RSS::Parser.parse(feed_url, validate)
+    rescue RSS::InvalidRSSError => e
+      raise e unless validate
+      return retrieve_feed(feed_url, false)
     end
 
     # Convert to rss object if got atom
@@ -74,6 +68,7 @@ module Helpers
       title: rss.channel.title,
       description: rss.channel.description,
       link: rss.channel.link,
+      _feed_url: feed_url,
       items: rss.items.map {|item|
         {
           title: item.title,
@@ -87,14 +82,15 @@ module Helpers
   end
 
   # Add channel
-  def add_channel(url, _channels, _sequences, find_feed_language = nil)
-    feed = retrieve_feed(url, find_feed_language)
-    if _channels.find(link: feed[:link]).count == 0
+  def add_channel(feed_url, _channels, _sequences)
+    feed = retrieve_feed(feed_url)
+    if _channels.find(_feed_url: feed[:_feed_url]).count == 0
       _channels.insert_one(
         serial: get_serial(_sequences, 'channel'),
         title: feed[:title],
         description: feed[:description],
         link: feed[:link],
+        _feed_url: feed[:_feed_url],
         last_checked: Time.at(0).utc,
       )
     end
@@ -102,11 +98,11 @@ module Helpers
 
   # Fetch and store articles
   def update_articles(channel, _channels, _articles, _sequences,
-    force = false, minimum_update_period = 900, find_feed_language = nil)
+    force = false, minimum_update_period = 900)
     return if !force &&
       Time.now - channel[:last_checked] < minimum_update_period
 
-    feed = retrieve_feed(channel[:link], find_feed_language)
+    feed = retrieve_feed(channel[:_feed_url])
     feed[:items].each do |item|
       next if _articles.find(
         link: item[:link],

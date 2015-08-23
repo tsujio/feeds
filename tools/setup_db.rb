@@ -34,7 +34,7 @@ db[:config].insert_one(
 # Create indexes
 db[:channels].indexes.create_many([
   {name: 'serial', key: {serial: 1}, unique: true},
-  {name: 'link', key: {link: 1}, unique: true},
+  {name: '_feed_url', key: {link: 1}, unique: true},
 ])
 db[:articles].indexes.create_many([
   {name: 'serial', key: {serial: 1}, unique: true},

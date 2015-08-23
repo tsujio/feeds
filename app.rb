@@ -27,7 +27,7 @@ get '/' do
     .sort(last_checked: 1)
     .limit(config[:amount_of_channels_to_update_at_once]).each do |c|
     update_articles(c, _channels, _articles, _sequences,
-      false, config[:minimum_update_period], config[:find_feed_language])
+      false, config[:minimum_update_period])
   end
 
   redirect to '/article?read=false'
@@ -46,16 +46,21 @@ get '/channel/new' do
 
   @url = params[:feed_url].to_s
   unless @url.empty?
-    @feed = retrieve_feed(@url, config[:find_feed_language])
+    feed_urls = find_feed_urls(@url, config[:find_feed_language])
+    if feed_urls.size == 0
+      raise RuntimeError.new("Cannot find feed url")
+    end
+
+    @feeds = feed_urls.map {|u| retrieve_feed(u) }
   else
-    @feed = nil
+    @feeds = nil
   end
 
   @title = 'New Channel'
 
   @existing_channels = _channels.find
     .sort(_id: 1)
-    .map {|a| a[:link] }
+    .map {|a| a[:_feed_url] }
 
   haml :'channel/new', layout: :layout
 end
@@ -65,16 +70,16 @@ post '/channel' do
   config = _config.find.first
 
   if params.has_key? 'feed_url'
-    urls = [params[:feed_url].to_s]
+    feed_urls = [params[:feed_url].to_s]
   else
-    urls = params[:feed_urls].to_s
+    feed_urls = params[:feed_urls].to_s
       .split("\n")
       .map {|u| u.strip }
   end
 
-  urls.each do |url|
+  feed_urls.each do |url|
     next if url.empty?
-    add_channel(url, _channels, _sequences, config[:find_feed_language])
+    add_channel(url, _channels, _sequences)
   end
 
   redirect to '/'
@@ -146,7 +151,7 @@ post '/update_articles' do
   force = to_b(params[:force])
   _channels.find.each do |c|
     update_articles(c, _channels, _articles, _sequences,
-      force, config[:minimum_update_period], config[:find_feed_language])
+      force, config[:minimum_update_period])
   end
 
   200

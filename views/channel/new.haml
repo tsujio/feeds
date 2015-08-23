@@ -7,35 +7,46 @@
     %input{type: 'url', name: 'feed_url', placeholder: 'Feed URL', value: "#{@url}"}
     %input.pure-button{type: 'submit', value: 'Get Contents'}
 
-- unless @feed.nil?
-  %section.channel
-    %h1= @feed[:title]
-    %p.description= @feed[:description]
-    %ul.menu
-      %li
-        %a.pure-button{href: "#{@feed[:link]}"} Visit
-      %li
-        %form.pure-form#form-add-channel{action: '/channel', method: 'POST'}
-          %input{type: 'hidden', name: "feed_url", value: "#{@url}"}
-          %input.pure-button.pure-button-primary{type: 'submit', value: 'Add'}
-
-  - @feed[:items].each do |item|
-    %article.article.listed
-      .article-header
-        %h1= item[:title]
-        %p.channel-title= @feed[:title]
-        %p.date= item[:date].localtime.strftime('%Y-%m-%d %H:%M:%S')
-        .clear-float
-
-      .article-body
-        - if item[:content_encoded]
-          != san item[:content_encoded]
-        - else
-          != san item[:description]
-
+- unless @feeds.nil?
+  - if @feeds.size > 1
+    %p Found more than 1 feed sources. Please select one to add.
+    - @feeds.each do |feed|
+      %section.channel.listed
+        %h1= feed[:title]
+        %p.description= feed[:description]
+        %ul.menu
+          %li
+            %a.pure-button{href: "/channel/new?feed_url=#{feed[:_feed_url]}"} Select
+  - else
+    - feed = @feeds[0]
+    %section.channel
+      %h1= feed[:title]
+      %p.description= feed[:description]
       %ul.menu
         %li
-          %a.pure-button{href: "#{item[:link]}"} Visit
+          %a.pure-button{href: "#{feed[:link]}"} Visit
+        %li
+          %form.pure-form#form-add-channel{action: '/channel', method: 'POST'}
+            %input{type: 'hidden', name: "feed_url", value: "#{feed[:_feed_url]}"}
+            %input.pure-button.pure-button-primary{type: 'submit', value: 'Add'}
+
+    - feed[:items].each do |item|
+      %article.article.listed
+        .article-header
+          %h1= item[:title]
+          %p.channel-title= feed[:title]
+          %p.date= item[:date].localtime.strftime('%Y-%m-%d %H:%M:%S')
+          .clear-float
+
+        .article-body
+          - if item[:content_encoded]
+            != san item[:content_encoded]
+          - else
+            != san item[:description]
+
+        %ul.menu
+          %li
+            %a.pure-button{href: "#{item[:link]}"} Visit
 
 %form#form-multiple-add.pure-form.pure-form-stacked{action: '/channel', method: 'POST'}
   %fieldset

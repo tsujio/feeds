@@ -21,13 +21,13 @@ _config = db[:config]
 
 # Top
 get '/' do
-  config = _config.find.first
+  @config = _config.find.first
 
   _channels.find
     .sort(last_checked: 1)
-    .limit(config[:amount_of_channels_to_update_at_once]).each do |c|
+    .limit(@config[:amount_of_channels_to_update_at_once]).each do |c|
     update_articles(c, _channels, _articles, _sequences,
-      false, config[:minimum_update_period])
+      false, @config[:minimum_update_period])
   end
 
   redirect to '/article?read=false&order=asc'
@@ -35,6 +35,7 @@ end
 
 # List channels
 get '/channel' do
+  @config = _config.find.first
   @title = 'Channels'
   @channels = _channels.find.sort(_id: 1)
   haml :'channel/index', layout: :layout
@@ -42,11 +43,10 @@ end
 
 # New channel
 get '/channel/new' do
-  config = _config.find.first
-
+  @config = _config.find.first
   @url = params[:feed_url].to_s
   unless @url.empty?
-    feed_urls = find_feed_urls(@url, config[:find_feed_language])
+    feed_urls = find_feed_urls(@url, @config[:find_feed_language])
     if feed_urls.size == 0
       raise RuntimeError.new("Cannot find feed url")
     end
@@ -94,7 +94,7 @@ end
 
 # List articles
 get '/article' do
-  config = _config.find.first
+  @config = _config.find.first
 
   query = {}
   query['read'] = to_b(params['read']) if params.has_key? 'read'
@@ -104,7 +104,7 @@ get '/article' do
   if params['order']
     order = params['order'] == 'asc' ? 1 : -1
   else
-    order = config[:articles_order]
+    order = @config[:articles_order]
   end
 
   if params.has_key? 'last_article_id'
@@ -123,7 +123,7 @@ get '/article' do
   @title = 'Articles'
   @articles = _articles.find(query)
     .sort(date: order)
-    .limit(config[:amount_of_articles_at_once])
+    .limit(@config[:amount_of_articles_at_once])
 
   if request.xhr?
     @articles.map {|a|
@@ -177,6 +177,7 @@ post '/setting' do
     ['find_feed_language', :String],
     ['amount_of_articles_at_once', :Integer],
     ['amount_of_channels_to_update_at_once', :Integer],
+    ['background_color_of_sidebar', :String],
   ])
   if params.has_key? 'articles_order'
     attrs['articles_order'] = params['articles_order'] == 'desc' ? -1 : 1

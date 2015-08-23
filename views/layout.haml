@@ -11,7 +11,7 @@
     %script{src: 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'}
   %body
     .pure-g
-      #header.pure-u-1-5
+      #header.pure-u-1-5{style: "background-color: #{@config[:background_color_of_sidebar]}"}
         %header
           %h1
             %a{href: '/'} Feeds

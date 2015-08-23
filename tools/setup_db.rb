@@ -29,6 +29,7 @@ db[:config].insert_one(
   articles_order: 1,
   amount_of_articles_at_once: 20,
   amount_of_channels_to_update_at_once: 5,
+  background_color_of_sidebar: '#3D4F5D',
 )
 
 # Create indexes

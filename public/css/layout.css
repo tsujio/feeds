@@ -149,6 +149,10 @@ body > div {
     display: inline;
 }
 
+.article img {
+    max-width: 100%;
+}
+
 /* end of article */
 
 /* channel/index */

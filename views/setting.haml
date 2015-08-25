@@ -11,17 +11,23 @@
       %input#find-feed-language{type: 'text', name: 'find_feed_language', value: "#{@config[:find_feed_language]}"}
 
     .pure-control-group
-      %label Articles Order
+      %label{for: 'article-sort-key'} Article Sort Key
+      %select#article-sort-key{name: 'article_sort_key'}
+        %option{value: '_id', selected: @config[:article_sort_key] == '_id'} Creation Date
+        %option{value: 'date', selected: @config[:article_sort_key] == 'date'} Article Date
+
+    .pure-control-group
+      %label Article Order
       - if @config[:articles_order] == -1
         %label.pure-radio{for: 'articles-order-asc'}
-          %input#articles-order-asc{type: 'radio', name: 'articles_order', value: 'asc'} Date ASC
+          %input#articles-order-asc{type: 'radio', name: 'articles_order', value: 'asc'} ASC
         %label.pure-radio{for: 'articles-order-desc'}
-          %input#articles-order-desc{type: 'radio', name: 'articles_order', value: 'desc', checked: 'checked'} Date DESC
+          %input#articles-order-desc{type: 'radio', name: 'articles_order', value: 'desc', checked: 'checked'} DESC
       - else
         %label.pure-radio{for: 'articles-order-asc'}
-          %input#articles-order-asc{type: 'radio', name: 'articles_order', value: 'asc', checked: 'checked'} Date ASC
+          %input#articles-order-asc{type: 'radio', name: 'articles_order', value: 'asc', checked: 'checked'} ASC
         %label.pure-radio{for: 'articles-order-desc'}
-          %input#articles-order-desc{type: 'radio', name: 'articles_order', value: 'desc'} Date DESC
+          %input#articles-order-desc{type: 'radio', name: 'articles_order', value: 'desc'} DESC
 
     .pure-control-group
       %label{for: 'amount-of-articles-at-once'} Amount of Articles to View at Once

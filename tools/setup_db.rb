@@ -26,6 +26,7 @@ db[:config].insert_one(
   version: 1,
   minimum_update_period: 900,
   find_feed_language: 'en',
+  article_sort_key: '_id',
   articles_order: 1,
   amount_of_articles_at_once: 20,
   amount_of_channels_to_update_at_once: 5,

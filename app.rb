@@ -122,7 +122,7 @@ get '/article' do
 
   @title = 'Articles'
   @articles = _articles.find(query)
-    .sort(date: order)
+    .sort(@config[:article_sort_key] => order)
     .limit(@config[:amount_of_articles_at_once])
 
   if request.xhr?
@@ -179,6 +179,10 @@ post '/setting' do
     ['amount_of_channels_to_update_at_once', :Integer],
     ['background_color_of_sidebar', :String],
   ])
+  if params.has_key?('article_sort_key') &&
+      ['_id', 'date'].include?(params['article_sort_key'])
+    attrs['article_sort_key'] = params['article_sort_key']
+  end
   if params.has_key? 'articles_order'
     attrs['articles_order'] = params['articles_order'] == 'desc' ? -1 : 1
   end

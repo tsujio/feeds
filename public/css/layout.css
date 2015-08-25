@@ -67,12 +67,12 @@ body > div {
 
 .channel {
     margin-bottom: 1em;
-    background-color: white;
 }
 
 .channel.listed {
     border: 1px solid silver;
     padding: 1em 2em 0em;
+    background-color: white;
 }
 
 .channel > h1 {

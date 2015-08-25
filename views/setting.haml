@@ -18,16 +18,10 @@
 
     .pure-control-group
       %label Article Order
-      - if @config[:articles_order] == -1
-        %label.pure-radio{for: 'articles-order-asc'}
-          %input#articles-order-asc{type: 'radio', name: 'articles_order', value: 'asc'} ASC
-        %label.pure-radio{for: 'articles-order-desc'}
-          %input#articles-order-desc{type: 'radio', name: 'articles_order', value: 'desc', checked: 'checked'} DESC
-      - else
-        %label.pure-radio{for: 'articles-order-asc'}
-          %input#articles-order-asc{type: 'radio', name: 'articles_order', value: 'asc', checked: 'checked'} ASC
-        %label.pure-radio{for: 'articles-order-desc'}
-          %input#articles-order-desc{type: 'radio', name: 'articles_order', value: 'desc'} DESC
+      %label.pure-radio{for: 'articles-order-asc'}
+        %input#articles-order-asc{type: 'radio', name: 'articles_order', value: 'asc', checked: @config[:articles_order] == 1} ASC
+      %label.pure-radio{for: 'articles-order-desc'}
+        %input#articles-order-desc{type: 'radio', name: 'articles_order', value: 'desc', checked: @config[:articles_order] == -1} DESC
 
     .pure-control-group
       %label{for: 'amount-of-articles-at-once'} Amount of Articles to View at Once

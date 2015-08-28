@@ -97,7 +97,7 @@ module Helpers
   end
 
   # Fetch and store articles
-  def update_articles(channel, _channels, _articles, _sequences,
+  def update_channel(channel, _channels, _articles, _sequences,
     force = false, minimum_update_period = 900)
     return if !force &&
       Time.now - channel[:last_checked] < minimum_update_period

@@ -26,7 +26,7 @@ get '/' do
   _channels.find
     .sort(last_checked: 1)
     .limit(@config[:amount_of_channels_to_update_at_once]).each do |c|
-    update_articles(c, _channels, _articles, _sequences,
+    update_channel(c, _channels, _articles, _sequences,
       false, @config[:minimum_update_period])
   end
 
@@ -143,13 +143,13 @@ patch '/article/:id' do
   200
 end
 
-# Update articles
-post '/update_articles' do
+# Update channels
+post '/update_channels' do
   config = _config.find.first
 
   force = to_b(params[:force])
   _channels.find.each do |c|
-    update_articles(c, _channels, _articles, _sequences,
+    update_channel(c, _channels, _articles, _sequences,
       force, config[:minimum_update_period])
   end
 

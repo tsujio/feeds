@@ -11,12 +11,6 @@
       %input#find-feed-language{type: 'text', name: 'find_feed_language', value: "#{@config[:find_feed_language]}"}
 
     .pure-control-group
-      %label{for: 'article-sort-key'} Article Sort Key
-      %select#article-sort-key{name: 'article_sort_key'}
-        %option{value: '_id', selected: @config[:article_sort_key] == '_id'} Creation Date
-        %option{value: 'date', selected: @config[:article_sort_key] == 'date'} Article Date
-
-    .pure-control-group
       %label Article Order
       %label.pure-radio{for: 'articles-order-asc'}
         %input#articles-order-asc{type: 'radio', name: 'articles_order', value: 'asc', checked: @config[:articles_order] == 1} ASC

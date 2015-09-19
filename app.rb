@@ -9,6 +9,15 @@ require './helpers'
 
 config_file './config.yaml'
 
+# Logging
+configure do
+  file = File.new(
+    File.join(settings.root, 'log', "#{settings.environment}.log"), 'a+'
+  )
+  file.sync = true
+  use Rack::CommonLogger, file
+end
+
 set :haml, escape_html: true
 
 Mongo::Logger.logger.level = settings.log[:mongo]

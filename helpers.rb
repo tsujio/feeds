@@ -99,13 +99,19 @@ module Helpers
   # Fetch and store articles
   def update_channel(channel, _channels, _articles, _sequences,
     force = false, minimum_update_period = 900)
-    return if !force &&
-      Time.now - channel[:last_checked] < minimum_update_period
+
+    logger.info("Begin updating channel: #{channel[:_feed_url]}")
+
+    if !force &&
+        Time.now - channel[:last_checked] < minimum_update_period
+      logger.info("Skip updating channel (Too frequent)")
+      return
+    end
 
     begin
       feed = retrieve_feed(channel[:_feed_url])
     rescue RSS::Error => e
-      p e
+      logger.error(e)
       return
     end
 
@@ -135,6 +141,8 @@ module Helpers
 
     _channels.find(_id: channel[:_id])
       .update_one('$set' => {last_checked: Time.now.utc})
+
+    logger.info("End updating channel")
   end
 
   # Convert object to boolean

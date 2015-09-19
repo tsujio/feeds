@@ -102,7 +102,13 @@ module Helpers
     return if !force &&
       Time.now - channel[:last_checked] < minimum_update_period
 
-    feed = retrieve_feed(channel[:_feed_url])
+    begin
+      feed = retrieve_feed(channel[:_feed_url])
+    rescue RSS::Error => e
+      p e
+      return
+    end
+
     feed[:items].each do |item|
       next if _articles.find(
         link: item[:link],
